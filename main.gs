@@ -4,8 +4,14 @@ function main() {
   const searched = searchBookmarks()
   console.log(`[main] searched.length = ${searched.length}`)
 
-  // comment に [あとで読む] が含まれているブックマークを取得
-  const filtered = searched.filter(bookmark => bookmark.comment.includes('[あとで読む]'))
+  // ミュート対象のドメイン一覧を取得
+  const muteDomains = PROP.MUTE_DOMAINS.split(',')
+
+  // 「comment に [あとで読む] が含まれている」「ミュート対象のドメインではない」ブックマークを取得
+  const filtered = searched.filter(bookmark => {
+    const isMute = muteDomains.some(domain => bookmark.entry.url.includes(domain))
+    return bookmark.comment.includes('[あとで読む]') && !isMute
+  })
   console.log(`[main] filtered.length = ${filtered.length}`)
 
   // eid に 任意の文字列が来るまでをリストとして出力
